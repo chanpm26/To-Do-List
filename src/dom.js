@@ -1,12 +1,10 @@
-import { addItem } from "./applicationLogic.js";
+import { addItem, addProject } from "./applicationLogic.js";
 
 export default function functionality() {
     const mainBody = document.getElementById('main');
     const addButton = document.getElementById('addButton');
-    const addProject = document.getElementById('projectFormContainer');
+    const projectFormContainer = document.getElementById('projectFormContainer');
     const projectSubmitButton = document.getElementById('projectSubmitButton');
-    const projectTitleValue = document.getElementById('projectName');
-    const projectDescriptionValue = document.getElementById('projectDescription');
     const projectCloseButton = document.getElementById('projectClose')
     let addTaskId = "";
     let deleteProjectId = "";
@@ -17,6 +15,8 @@ export default function functionality() {
     let projectList = [];
     let storedProjectList = []
     let projectEditButtonList = []
+    let projectListInfo = [];
+    let storedProjectListInfo = []
     let selectedProject = document.getElementById(addTaskId);
 
 
@@ -27,26 +27,26 @@ export default function functionality() {
         storedProjectList.push([])
     }
 
+    function addProjectListInfo(project) {
+        projectListInfo.push(project)
+        storedProjectListInfo.push(project)
+    }
+
     function createProjectContainer() {
         let projectContainer = document.createElement('div')
         mainBody.appendChild(projectContainer);
         return projectContainer
     }
     
-    function createNewProject(projectContainer) {
+    function createNewProject(projectContainer, project) {
         let newProject = document.createElement('div');
             newProject.classList.add("project")
-            let projectTitle = document.createElement('p');
-            projectTitle.classList.add('projectTitle')
-            projectTitle.setAttribute('data-projectitle', projectList.length - 1)
-            projectTitle.textContent = `Project Title: ${projectTitleValue.value}`;
-            let projectDescription = document.createElement('p');
-            projectDescription.classList.add('projectDescription')
-            projectDescription.setAttribute('data-projectdescription', projectList.length - 1)
-            projectDescription.textContent = `Project Description: ${projectDescriptionValue.value}`;
+            let projectInfo = document.createElement('p');
+            projectInfo.classList.add('projectInfo')
+            projectInfo.setAttribute('data-projectInfo', projectList.length - 1)
+            projectInfo.textContent = project.info
             projectContainer.appendChild(newProject)
-            newProject.appendChild(projectTitle);
-            newProject.appendChild(projectDescription)
+            newProject.appendChild(projectInfo);
         return newProject
         }
     
@@ -136,8 +136,8 @@ export default function functionality() {
 
     function projectEditButtonFunctionality(editButton) {
         editButton.addEventListener('click', function() {
-            addProject.classList.remove('hidden');
-            addProject.classList.add('edit')
+            projectFormContainer.classList.remove('hidden');
+            projectFormContainer.classList.add('edit')
             projectEditID = editButton.dataset.projectedit;
         })
     }
@@ -161,15 +161,19 @@ export default function functionality() {
     }}
 
     function deleteButtonFunctionality(button) {
-           button.addEventListener('click', function(){
-                deleteProjectId = button.dataset.delete;
-                projectToDelete = document.getElementById(deleteProjectId);
-                projectList.splice(deleteProjectId, 1);
-                toDoButtonList.splice(deleteProjectId,1);
-                deleteButtonList.splice(deleteProjectId, 1);
-                toDoButtonList.splice(deleteProjectId, 1);
-                let projectButtonsToDelete = document.querySelector(`[data-projectbuttons="${deleteProjectId}"]`)
-                mainBody.removeChild(projectToDelete.parentNode)
+        button.addEventListener('click', function(){
+            deleteProjectId = button.dataset.delete;
+            projectToDelete = document.getElementById(deleteProjectId);
+            projectList.splice(deleteProjectId, 1);
+            projectListInfo.splice(deleteProjectId, 1)
+            toDoButtonList.splice(deleteProjectId,1);
+            deleteButtonList.splice(deleteProjectId, 1);
+            toDoButtonList.splice(deleteProjectId, 1);
+            let projectButtonsToDelete = document.querySelector(`[data-projectbuttons="${deleteProjectId}"]`)
+            mainBody.removeChild(projectToDelete.parentNode);
+            console.log(projectList)
+            saveToLocalStorage();
+              
     })}
 
     function sortProjectTasks(project, typeofSort) {
@@ -189,10 +193,8 @@ export default function functionality() {
         let submitButtonID = submitButton.dataset.sort
         let typeofSort = document.querySelector(`[data-sortinput="${submitButtonID}"]`);
         let projectToSort = projectList[submitButtonID]
-        let storedProjectToSort = storedProjectList[submitButtonID]
         if (projectToSort.length != 0) {
             sortProjectTasks(projectToSort, typeofSort);
-            sortProjectTasks(storedProjectToSort, typeofSort);
             displaySortedProject(submitButtonID, projectToSort)
             saveToLocalStorage() 
         }
@@ -227,9 +229,9 @@ export default function functionality() {
             pushDeleteTaskToList(deleteButton);
 
             createEditButtonList();
-            createDeleteTaskButtonList();
+            deleteTaskButtonFunctionality(deleteButton);
             addCheckboxStatus(newCheckbox);
-            addTaskStatus();
+            addTaskStatus(newCheckbox);
             changeStatusBarOnCheckboxClick(newCheckbox)
         }
     }
@@ -259,15 +261,17 @@ export default function functionality() {
 // project event listeners
 
     addButton.addEventListener('click', function() {
-        addProject.classList.remove('hidden')
+        projectFormContainer.classList.remove('hidden')
     })
     
 
     projectSubmitButton.addEventListener('click', function() {
-        if (!addProject.classList.contains('edit')) {
+        if (!projectFormContainer.classList.contains('edit')) {
         addToProjectList();
+        let newProject = addProject();
         let projectContainer = createProjectContainer();
-        let project = createNewProject(projectContainer);
+        let project = createNewProject(projectContainer, newProject);
+        addProjectListInfo(newProject)
         let projectID = setNewProjectId(project);
         let newStatusBar = createStatusBar(project)
         let sortButtons = addSortButtons(project);
@@ -283,7 +287,7 @@ export default function functionality() {
         deleteButtonFunctionality(deleteProjectButton);
         projectEditButtonFunctionality(editProjectButton);
 
-        addProject.classList.add('hidden');
+        projectFormContainer.classList.add('hidden');
         clearInputs();
 
         saveToLocalStorage()
@@ -291,21 +295,20 @@ export default function functionality() {
     })
 
     projectSubmitButton.addEventListener('click', function() {
-        if (addProject.classList.contains('edit')) {
-            let projectTitle = document.querySelector(`[data-projectitle="${projectEditID}"]`); 
-            let projectDescription  = document.querySelector((`[data-projectdescription="${projectEditID}"]`))
-            console.log(projectTitle, projectDescription)
-            projectTitle.textContent = `Project Title: ${projectTitleValue.value}`;
-            projectDescription.textContent = `Project Description: ${projectDescriptionValue.value}`;
+        if (projectFormContainer.classList.contains('edit')) {
+            let projectToRevise = document.querySelector(`[data-projectinfo="${projectEditID}"]`); 
+            let revisedProject = addProject();
+            projectListInfo.splice(projectEditID, 1, revisedProject)
+            projectToRevise.textContent = revisedProject.info
             clearInputs()
-            addProject.classList.add('hidden');
-            addProject.classList.remove('edit')
+            projectFormContainer.classList.add('hidden');
+            projectFormContainer.classList.remove('edit')
             saveToLocalStorage() 
         }
     })
 
     projectCloseButton.addEventListener('click', function() {
-        addProject.classList.add('hidden')
+        projectFormContainer.classList.add('hidden')
     })
 
 // task section
@@ -332,6 +335,7 @@ export default function functionality() {
             let item = addItem();
             if (item != undefined && item.dueDate != "") {
                 addItemToProjectList(item)
+                console.log(projectList)
                 let newTask = newTaskContainer();
                 newTask.setAttribute('data-taskcontainer', `${[addTaskId]}${projectList[addTaskId].length -1}`)
                 newTask.setAttribute('data-specifictaskcontainer', `${projectList[addTaskId].length -1}`)
@@ -356,10 +360,10 @@ export default function functionality() {
                 pushDeleteTaskToList(deleteButton);
 
                 createEditButtonList();
-                createDeleteTaskButtonList();
+                deleteTaskButtonFunctionality(deleteButton);
                 addCheckboxStatus(newCheckbox);
                 changeStatusBarOnCheckboxClick(newCheckbox);
-                addTaskStatus();
+                addTaskStatus(newCheckbox);
 
                 clearInputs();
                 itemFormContainer.classList.add('hidden');
@@ -394,16 +398,20 @@ export default function functionality() {
 
     function addItemToProjectList(item){
         projectList[addTaskId].push(item);
-        storedProjectList[addTaskId].push(item)
     }
 
     function createCheckbox(item, taskContainer) {
         let checkbox = document.createElement('button');
         checkbox.classList.add('checkbox');
         if (item.status != 'Complete') {
+            if (item._status != 'Complete') {
             checkbox.classList.add('notComplete');
             taskContainer.appendChild(checkbox);
-        } else if (item.status == 'Complete') {
+            } else if (item._status == 'Complete') {
+                checkbox.classList.add('Complete');
+                taskContainer.appendChild(checkbox);
+            }
+        } else if (item._status == 'Complete') {
             checkbox.classList.add('Complete');
             taskContainer.appendChild(checkbox);
         }
@@ -458,25 +466,27 @@ export default function functionality() {
             }
         }
     
-    function createDeleteTaskButtonList() {
-        for (let i=0; i < deleteTaskButtonList.length; i++) {
-            deleteTaskButtonList[i].addEventListener('click', function() {
-                deleteTaskButtonId =  deleteTaskButtonList[i].dataset.deleteitem;
-                taskToDelete =  document.querySelector(`[data-taskContainer="${deleteTaskButtonId}"]`);
-                let deletedTaskContainer = taskToDelete.parentNode;
-                deletedTaskContainer.removeChild(taskToDelete);
-                deleteTaskButtonList.splice([i], 1);
-                editTaskButtonList.splice([i], 1);
-                checkboxList.splice([i], 1)
+    function deleteTaskButtonFunctionality(button) {
+        button.addEventListener('click', function() {
+            deleteTaskButtonId =  button.dataset.deleteitem;
+            let specificID = button.dataset.specificdeleteitem;
+            taskToDelete =  document.querySelector(`[data-taskContainer="${deleteTaskButtonId}"]`);
+            let projectParent = taskToDelete.parentNode;
+            projectParent.removeChild(taskToDelete);
+            deleteTaskButtonList.splice(specificID, 1);
+            editTaskButtonList.splice(specificID, 1);
+            checkboxList.splice(specificID, 1);
+            let projectParentId = projectParent.id
+            projectList[projectParentId].splice(specificID, 1);
+            fillDeletedStatusBar(projectParentId);
+            saveToLocalStorage()
             })
-        }}
+        }
 
     function editItem(){
         itemForm.classList.remove('addItem');
         let revisedItem = addItem();
         if (revisedItem != undefined && revisedItem.dueDate != "") {
-            console.log(editButtonId)
-            console.log(selectedTaskToEdit)
             selectedTaskToEdit.innerText = "";
             selectedTaskToEdit.innerText = revisedItem.info;
             editProjectList(revisedItem);
@@ -533,7 +543,6 @@ export default function functionality() {
         let taskContainer = checkbox.parentNode;
         let selectedProject = taskContainer.parentNode.id
         let selectedStatusBar = document.querySelector(`[data-statusbar="${selectedProject}"]`);
-        console.log(selectedStatusBar)
         let statusBlock = document.createElement('div');
         if (selectedStatusBar.firstChild) {
             selectedStatusBar.removeChild(selectedStatusBar.firstChild)
@@ -564,21 +573,20 @@ export default function functionality() {
         })
     }
 
-    function addTaskStatus() {
-        for (let i=0; i< checkboxList.length; i++) {
-            checkboxList[i].addEventListener('click', function() {
-                let checkboxID = checkboxList[i].dataset.checkbox
-                let taskToChange = document.querySelector(`[data-task="${checkboxID}"]`)
-                if (checkboxList[i].classList.contains('Complete')) {
-                    taskToChange.classList.remove('taskNotComplete');
-                    taskToChange.classList.add('taskComplete');
-                } else if (checkboxList[i].classList.contains('notComplete')) {
-                    taskToChange.classList.add('taskNotComplete');
-                    taskToChange.classList.remove('taskComplete');
-                }
-            })
-        }
+    function addTaskStatus(checkbox) {
+        checkbox.addEventListener('click', function() {
+            let checkboxID = checkbox.dataset.checkbox
+            let taskToChange = document.querySelector(`[data-task="${checkboxID}"]`)
+            if (checkbox.classList.contains('Complete')) {
+                taskToChange.classList.remove('taskNotComplete');
+                taskToChange.classList.add('taskComplete');
+            } else if (checkbox.classList.contains('notComplete')) {
+                taskToChange.classList.add('taskNotComplete');
+                taskToChange.classList.remove('taskComplete');
+            }
+        })
     }
+    
 
     function filterProject() {
         let filteredArrayList = []
@@ -628,6 +636,19 @@ export default function functionality() {
         return selectedStatusBar
             }   
 
+    function deleteStatusBar(percentage, project) {
+        let selectedStatusBar = document.querySelector(`[data-statusbar="${project}"]`);
+        let statusBlock = document.createElement('div');
+        if (selectedStatusBar.firstChild) {
+            selectedStatusBar.removeChild(selectedStatusBar.firstChild)
+            } else {
+            }
+        statusBlock.style.width = `${percentage}%`
+        statusBlock.style.height = "100%"
+        selectedStatusBar.appendChild(statusBlock)
+        return selectedStatusBar
+    }
+
     function displayPercentage(statusBar, percentage) {
         let selectedStatusBarID = statusBar.dataset.statusbar;
         let selectedPercentageText = document.querySelector(`[data-percentagetext="${selectedStatusBarID}"]`);
@@ -645,9 +666,23 @@ export default function functionality() {
         let filteredProject = filterProject();
         let taskContainer = selectedTaskToEdit.parentNode
         let parentProject = taskContainer.parentNode.id
-        console.log(parentProject)
         let statusBar = editStatusBar(filteredProject.percentageArray[parentProject]);
+        if (filteredProject.percentageArray[parentProject] != NaN) {
         displayPercentage(statusBar, filteredProject.percentageArray[parentProject]);
+        }
+    }
+
+    function fillDeletedStatusBar(projectToDelete) {
+        let filteredProject = filterProject();
+        let parentProject = projectToDelete
+        let statusBar = deleteStatusBar(filteredProject.percentageArray[parentProject], parentProject);
+        if (isNaN(filteredProject.percentageArray[parentProject]) == false) {
+            displayPercentage(statusBar, filteredProject.percentageArray[parentProject]);
+        } else {
+            let selectedStatusBarID = statusBar.dataset.statusbar;
+            let selectedPercentageText = document.querySelector(`[data-percentagetext="${selectedStatusBarID}"]`);
+            selectedPercentageText.innerText = ""
+        }
     }
 
 
@@ -668,24 +703,36 @@ export default function functionality() {
 // local storage 
 
 function saveToLocalStorage() {
-    localStorage.setItem(`storedProjectList`, JSON.stringify(storedProjectList))
+    storedProjectList = projectList
+    storedProjectListInfo = projectListInfo
+    localStorage.setItem(`storedProjectList`, JSON.stringify(storedProjectList));
+    localStorage.setItem(`projectInfo`, JSON.stringify(storedProjectListInfo))
+    console.log(storedProjectList)
 }
 
 function getItemFromLocalStorage() {
-   let pullData = JSON.parse(localStorage.getItem('storedProjectList'))
-    for (const project in pullData) {
-        displayStoredProject();
-        pullData[project].forEach(function(item) {
+   let pullTasks = JSON.parse(localStorage.getItem('storedProjectList'));
+   console.log(pullTasks)
+   let pullProjects = JSON.parse(localStorage.getItem('projectInfo'));
+   for (const projectInfo in pullProjects) {
+        let storedProjectInfo = pullProjects[projectInfo]
+        addBackProjectMethods(storedProjectInfo);
+        displayStoredProject(storedProjectInfo)
+   }
+    for (const project in pullTasks) {
+            if (pullTasks != "") {
+            pullTasks[project].forEach(function(item) {
             selectedProject = document.getElementById(project);
             addTaskId = project;
             let storedItem = item
-            addBackObjectMethods(storedItem)
+            addBackTaskMethods(storedItem)
             createStoredTask(storedItem)
-        })
+            })
+        }
     }
 }
 
-function addBackObjectMethods(item) {
+function addBackTaskMethods(item) {
     function info(item) {
         return (`Title: ${item._title} \r\n
         Description: ${item._description} \r\n
@@ -696,10 +743,19 @@ function addBackObjectMethods(item) {
     item.info = info(item)
 }
 
-function displayStoredProject() {
+function addBackProjectMethods(project) {
+    function info(project) {
+        return (`Project Title: ${project._title} \r\n
+        Project Description: ${project._description} \r\n`)
+    }
+    project.info = info(project)
+}
+
+function displayStoredProject(storedProject) {
     addToProjectList();
     let projectContainer = createProjectContainer();
-    let project = createNewProject(projectContainer);
+    let project = createNewProject(projectContainer, storedProject);
+    addProjectListInfo(storedProject)
     let projectID = setNewProjectId(project);
     let newStatusBar = createStatusBar(project)
     let sortButtons = addSortButtons(project);
@@ -742,10 +798,10 @@ function createStoredTask(item) {
     pushDeleteTaskToList(deleteButton);
 
     createEditButtonList();
-    createDeleteTaskButtonList();
+    deleteTaskButtonFunctionality(deleteButton);
     addCheckboxStatus(newCheckbox);
     changeStatusBarOnCheckboxClick(newCheckbox);
-    addTaskStatus();
+    addTaskStatus(newCheckbox);
 }
 
 window.onload = () => {

@@ -128,16 +128,6 @@ input, select {
     margin-bottom: 0.5vh;
 }
 
-.projectTitle {
-    font-weight: bold;
-    font-size: 1.4rem;
-    padding: 10px 0px;
-}
-
-.projectDescription {
-    padding-bottom: 5px;
-}
-
 .addToDoButton {
     width: 4vw;
     text-align: center;
@@ -239,8 +229,11 @@ input, select {
     text-align: center;
 }
 
-.projectTitle, .projectDescription {
+.projectInfo {
     word-spacing: 3px;
+    font-size: 1.3rem;
+    line-height: 1rem;
+    padding: 16px 0px;
 }
 
 #projectClose, #taskClose {

@@ -13,7 +13,7 @@ export default class ToDoItem {
     }
 
     get status() {
-        return (this._status)
+        return (`${this._status}`)
     }
 
     get dueDate() {

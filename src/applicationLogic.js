@@ -1,6 +1,7 @@
 import ToDoItem from "./task.js";
+import Project from "./project.js";
 
-export function addItem() {
+function addItem() {
     let itemName = document.getElementById('itemName').value;
     let itemDescription = document.getElementById('itemDescription').value;
     let dueDate = document.getElementById('dueDate').value;
@@ -13,3 +14,12 @@ export function addItem() {
     
 }
 
+function addProject() {
+    const projectTitle = document.getElementById('projectName').value;
+    const projectDescription = document.getElementById('projectDescription').value;
+
+    let project = new Project(projectTitle, projectDescription)
+    return project;
+}
+
+export {addItem, addProject}
