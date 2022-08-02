@@ -1,0 +1,297 @@
+body {
+    font-family: 'Reem Kufi', sans-serif;
+}
+
+#container {
+    display: grid;
+    grid-template-columns: 20vw 80vw;
+    min-height: 100vh;
+    height: auto;
+    max-width: 100vw;
+    place-content: start center;
+    box-sizing: border-box;
+}
+
+#sidebar {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 8px 8px 8px 20px;
+    min-height: 100vh;
+    background-color: rgb(21, 189, 245);
+    color: white;
+}
+
+#sidebar > p {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 10vh;
+    margin-bottom: 2vh;
+    text-align: center;
+}
+
+#main {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    grid-template-rows: minmax(min-content, max-content);
+    column-gap: 30px;
+    background-color: rgba(253, 253, 253, 0.897);
+    white-space: pre-line;
+    padding: 10px 40px 10px 10px;
+}
+
+#addButton {
+    border-radius: 50%;
+    padding-bottom: 10px;
+    font-size: 3rem;
+    line-height: 0px;
+    width: 3vw;
+    height: 3vw;
+    background-color: white;
+    border-color: white;
+    text-align: center;
+    margin-bottom: 2vh;
+}
+
+
+#addButton:hover {
+    border: 4px solid gold;
+}
+
+.buttonSection {
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.hidden {
+    display: none;
+}
+
+#itemForm, #projectForm {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 15px;
+    margin: 10px;
+    gap: 3px;
+    border-radius: 7px;
+    font-weight: bold;
+}
+
+#projectForm {
+    background-color: white;
+    color: darkblue;
+}
+
+button {
+    font-family: 'Reem Kufi', sans-serif;
+    padding: 0px;
+}
+
+#projectSubmitButton {
+    background-color: darkblue;
+    color: white;
+    border-color: darkblue;
+    font-size: 1rem;
+}
+
+#projectSubmitButton:hover, #itemSubmitButton:hover {
+    background-color: gold;
+    border-color: gold;
+    color: black;
+}
+
+#checkbox {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    align-items: center;
+}
+
+input, select {
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+#notes {
+    height: 50px;
+}
+
+
+.project {
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 16px;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.884);
+    border:rgba(0, 0, 0, 0.541) 1px solid;
+    margin-bottom: 0.5vh;
+}
+
+.projectTitle {
+    font-weight: bold;
+    font-size: 1.4rem;
+    padding: 10px 0px;
+}
+
+.projectDescription {
+    padding-bottom: 5px;
+}
+
+.addToDoButton {
+    width: 4vw;
+    text-align: center;
+    background-color:gold;
+    color: black;
+    border-color: gold;
+    margin-left: .1vw;
+    margin-right: .1vw;
+}
+
+.addToDoButton:hover {
+    background-color: rgb(0, 196, 0);
+    border-color: rgb(0, 196, 0);
+    color: white;
+}
+
+.deleteButton {
+    width: 3vw;
+    min-width: 60px;
+    background-color: darkblue;
+    color: white;
+    border-color: darkblue;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+.deleteButton:hover {
+    background-color:red;
+    border-color: red;
+}
+
+.projectEditButton {
+    padding: 2px 8px;
+    background-color: rgb(21, 189, 245);
+    border-color: rgb(21, 189, 245);
+    color: white;
+}
+
+.taskContainer {
+    display: flex;
+    margin-bottom: 10px;
+    padding-top: 8px;
+    margin-top: 8px;
+    border-top: 1px solid black;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.notComplete {
+    width: 18px;
+    height: 18px;
+    background-color: red;
+}
+
+.Complete{
+    background-color:  rgb(0, 196, 0);
+    width: 18px;
+    height: 18px;
+}
+
+.itemButtons {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+}
+
+.deleteTaskButton, .editTaskButton {
+    width: 90px;
+    height: 30px;
+}
+
+.newTask {
+    overflow: hidden;
+    height: 50px;
+    word-spacing: 3px;
+    line-height: 1rem;
+    font-size: 1.2rem;
+}
+
+.newTask:hover{
+    height: auto;
+}
+
+.addItem {
+    background-color: darkblue;
+}
+
+.editItem {
+    background-color: rgb(184, 176, 255);
+}
+
+.editItem::before {
+    content: "Edit your task here";
+    color: white;
+    background-color: rgb(77, 76, 66);
+    padding: 8px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.projectTitle, .projectDescription {
+    word-spacing: 3px;
+}
+
+#projectClose, #taskClose {
+    width: 18px;
+    font-size: 12px;
+    padding: 0px;
+    text-align: center;
+    margin-left: auto;
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+
+.taskComplete {
+    text-decoration: line-through;
+}
+
+select {
+    margin-right: 0.1vw;
+}
+
+#reset:hover {
+    background-color: rgb(0, 196, 0);
+    border-color: rgb(0, 196, 0);
+    color: white;
+}
+
+.statusBar {
+    display: flex;
+    border: 1px solid black;
+    border-radius: 20px;
+    height: 20px;
+    width: 200px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.statusBar > div:first-of-type {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    background-color:rgb(0, 196, 0);
+}
+
+.statusBar > div:last-of-type {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.statusBarContainer {
+    display: flex;
+    gap: 0.25vw;
+    font-size: 1.3rem;
+    align-items: center;
+}
