@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>To Do List</title>
+        <link rel="stylesheet" href="reset.css">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div id="container">
+            <div id="sidebar">
+                <p>Let's Get Stuff Done!</p>
+                <button id="addButton">+</button>
+                <div id="projectFormContainer" class="hidden">
+                    <div id="projectForm">
+                        <button id="projectClose">x</button>
+                        <label for="project-name">Project Name</label>
+                        <input type="text" id="projectName">
+                        <label for="project-description">Project Description</label>
+                        <input type="textarea" id="projectDescription">
+                        <button id="projectSubmitButton">Submit</button>
+                    </div>
+                </div>
+                <div id="itemFormContainer" class="hidden">
+                    <div id="itemForm" class="addItem">
+                            <button id="taskClose">x</button>
+                            <label for="item-name">Name (Required)</label>
+                            <input type="text" id="itemName">
+                            <label for="item-description">Description</label>
+                            <input type="text" id="itemDescription">
+                            <label for="dueDate">Due Date (Required)</label>
+                            <input type="date" id="dueDate">
+                            <label for="priority">Priority (Required)</label>
+                            <select id="priority">
+                                <option value="1">High</option>
+                                <option value="2">Medium</option>
+                                <option value="3">Low</option>
+                            </select>
+                            <label for="notes">Notes</label>
+                            <input type="textarea" id="notes">
+                            <label for="complete">Status (Required)</label>
+                            <select id="complete">
+                                <option value="Not Complete">Not Complete</option>
+                                <option value="Complete">Complete</option>
+                            </select>
+                            <button id="itemSubmitButton" >Submit</button>
+                            <button id="reset">Reset</button>
+                    </div>
+                </div>
+            </div>
+            <div id="main">
+
+            </div>
+        </div>
+        <script src="main.js"></script>
+    </body>
+</html>
