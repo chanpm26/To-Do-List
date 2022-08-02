@@ -24,7 +24,6 @@ export default function functionality() {
 
     function addToProjectList() {
         projectList.push([]);
-        storedProjectList.push([])
     }
 
     function addProjectListInfo(project) {
@@ -171,7 +170,6 @@ export default function functionality() {
             toDoButtonList.splice(deleteProjectId, 1);
             let projectButtonsToDelete = document.querySelector(`[data-projectbuttons="${deleteProjectId}"]`)
             mainBody.removeChild(projectToDelete.parentNode);
-            console.log(projectList)
             saveToLocalStorage();
               
     })}
@@ -335,7 +333,6 @@ export default function functionality() {
             let item = addItem();
             if (item != undefined && item.dueDate != "") {
                 addItemToProjectList(item)
-                console.log(projectList)
                 let newTask = newTaskContainer();
                 newTask.setAttribute('data-taskcontainer', `${[addTaskId]}${projectList[addTaskId].length -1}`)
                 newTask.setAttribute('data-specifictaskcontainer', `${projectList[addTaskId].length -1}`)
@@ -571,6 +568,7 @@ export default function functionality() {
             }
             saveToLocalStorage();
         })
+        console.log(projectList)
     }
 
     function addTaskStatus(checkbox) {
@@ -602,7 +600,7 @@ export default function functionality() {
     
 
     function filterByComplete(item) {
-        return item.status == 'Complete'
+        return item._status == 'Complete'
     } 
 
     
@@ -619,7 +617,6 @@ export default function functionality() {
         return selectedStatusBar
         }   
     
- 
 
     function editStatusBar(percentage) {
         let taskContainer = selectedTaskToEdit.parentNode
@@ -703,16 +700,12 @@ export default function functionality() {
 // local storage 
 
 function saveToLocalStorage() {
-    storedProjectList = projectList
-    storedProjectListInfo = projectListInfo
-    localStorage.setItem(`storedProjectList`, JSON.stringify(storedProjectList));
-    localStorage.setItem(`projectInfo`, JSON.stringify(storedProjectListInfo))
-    console.log(storedProjectList)
+    localStorage.setItem(`storedProjectList`, JSON.stringify(projectList));
+    localStorage.setItem(`projectInfo`, JSON.stringify(projectListInfo))
 }
 
 function getItemFromLocalStorage() {
    let pullTasks = JSON.parse(localStorage.getItem('storedProjectList'));
-   console.log(pullTasks)
    let pullProjects = JSON.parse(localStorage.getItem('projectInfo'));
    for (const projectInfo in pullProjects) {
         let storedProjectInfo = pullProjects[projectInfo]
@@ -733,6 +726,10 @@ function getItemFromLocalStorage() {
 }
 
 function addBackTaskMethods(item) {
+    Object.defineProperty(item, 'status', {
+        set(x) { item._status = x; }
+    })
+
     function info(item) {
         return (`Title: ${item._title} \r\n
         Description: ${item._description} \r\n
