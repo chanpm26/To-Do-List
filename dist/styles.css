@@ -288,3 +288,17 @@ select {
     font-size: 1.3rem;
     align-items: center;
 }
+
+#paige {
+    position: absolute;
+    bottom: 4vh;
+    letter-spacing: .5vw;
+    font-size: 1rem !important;
+}
+
+#credit {
+    position: absolute;
+    bottom: 1vh;
+    letter-spacing: .1vw;
+    font-size: 0.75rem !important;
+}
