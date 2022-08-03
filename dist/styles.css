@@ -14,6 +14,7 @@ body {
 
 #sidebar {
     display: flex;
+    position: relative;
     align-items: center;
     flex-direction: column;
     padding: 8px 8px 8px 20px;
@@ -290,15 +291,15 @@ select {
 }
 
 #paige {
-    position: absolute;
-    bottom: 4vh;
+    position: relative;
+    bottom: 2vh;
     letter-spacing: .5vw;
     font-size: 1rem !important;
 }
 
 #credit {
     position: absolute;
-    bottom: 1vh;
+    bottom: 0;
     letter-spacing: .1vw;
     font-size: 0.75rem !important;
 }

@@ -176,12 +176,16 @@ export default function functionality() {
     function sortProjectTasks(project, typeofSort) {
         if (typeofSort.value == "Name") {
             project.sort((a, b) => (a.title > b.title) ? 1 : -1)
+            project.sort((a, b) => (a._title > b._title) ? 1 : -1)
         } else if (typeofSort.value == "Priority") {
             project.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
+            project.sort((a, b) => (a._priority > b._priority) ? 1 : -1)
         } else if (typeofSort.value == "Completion") {
             project.sort((a, b) => (a.status > b.status) ? -1 : 1)
+            project.sort((a, b) => (a._status > b._status) ? -1 : 1)
         } else if (typeofSort.value == "dueDate") {
             project.sort((a, b) => (a.dueDate > b.dueDate) ? 1 : -1)
+            project.sort((a, b) => (a._dueDate > b._dueDate) ? 1 : -1)
         }
     }
 
@@ -383,7 +387,7 @@ export default function functionality() {
     function newItemDiv(taskContainer, item) {
         let newTask = document.createElement('div');
         newTask.classList.add('newTask');
-        if (item.status != 'Complete') {
+        if (item.status != 'Complete' && item._status != "Complete") {
             newTask.classList.add('taskNotComplete')
         } else {
             newTask.classList.add('taskComplete')
@@ -721,20 +725,18 @@ function getItemFromLocalStorage() {
         } else {
             projectListInfo.push("");
             projectList.push("")
-        }
-    console.log(projectList)
-        
+        }        
    }
     for (const project in pullTasks) {
-        console.log(pullTasks)
             if (pullTasks[project] != "") {
                 pullTasks[project].forEach(function(item) {
                 selectedProject = document.getElementById(project);
                 addTaskId = project;
-                console.log(addTaskId)
                 let storedItem = item
                 addBackTaskMethods(storedItem)
+                console.log(storedItem._status)
                 createStoredTask(storedItem)
+                console.log(storedItem)
                 })
         }        
         }
