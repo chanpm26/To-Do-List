@@ -148,31 +148,30 @@ export default function functionality() {
         }
     }
 
-    function addItemToProject() {
-        for (let i = 0; i < toDoButtonList.length; i++) {
-        toDoButtonList[i].addEventListener('click', function(){
+    function addItemToProject(button) {
+       button.addEventListener('click', function(){
             itemFormContainer.classList.remove('hidden');
-            addTaskId = toDoButtonList[i].dataset.add;
+            addTaskId = button.dataset.add;
             selectedProject = document.getElementById(addTaskId);
             itemForm.classList.remove('editItem');
             itemForm.classList.add('addItem')
             })
-    }}
+    }
 
     function deleteButtonFunctionality(button) {
         button.addEventListener('click', function(){
             deleteProjectId = button.dataset.delete;
             projectToDelete = document.getElementById(deleteProjectId);
-            projectList.splice(deleteProjectId, 1);
-            projectListInfo.splice(deleteProjectId, 1)
-            toDoButtonList.splice(deleteProjectId,1);
-            deleteButtonList.splice(deleteProjectId, 1);
-            toDoButtonList.splice(deleteProjectId, 1);
+            projectList.splice(deleteProjectId, 1, "");
+            projectListInfo.splice(deleteProjectId, 1, "")
+            toDoButtonList.splice(deleteProjectId, 1, "");
+            deleteButtonList.splice(deleteProjectId, 1, "");
+            toDoButtonList.splice(deleteProjectId, 1, "");
             let projectButtonsToDelete = document.querySelector(`[data-projectbuttons="${deleteProjectId}"]`)
             mainBody.removeChild(projectToDelete.parentNode);
+            console.log(projectList)
             saveToLocalStorage();
-              
-    })}
+        })}
 
     function sortProjectTasks(project, typeofSort) {
         if (typeofSort.value == "Name") {
@@ -281,14 +280,15 @@ export default function functionality() {
         projectToDoButtonList(addItemToProjectButton);
         let deleteProjectButton = addProjectDeleteButton(buttonSection);
         projectDeleteButtonList(deleteProjectButton);
-        addItemToProject();
+        addItemToProject(addItemToProjectButton);
         deleteButtonFunctionality(deleteProjectButton);
         projectEditButtonFunctionality(editProjectButton);
 
         projectFormContainer.classList.add('hidden');
         clearInputs();
 
-        saveToLocalStorage()
+        saveToLocalStorage();
+        console.log(projectList)
     }
     })
 
@@ -568,7 +568,7 @@ export default function functionality() {
             }
             saveToLocalStorage();
         })
-        console.log(projectList)
+
     }
 
     function addTaskStatus(checkbox) {
@@ -590,11 +590,17 @@ export default function functionality() {
         let filteredArrayList = []
         let percentageArray = []
         for (let i = 0; i < projectList.length; i++) {
+            if (typeof projectList[i] === 'object') {
                 let filteredArray = projectList[i].filter(filterByComplete)
                 filteredArrayList.push(filteredArray)
                 let percentage = Math.round(filteredArray.length / projectList[i].length * 100); 
                 percentageArray.push(percentage)
+            } else {
+                filteredArrayList.push("")
+                percentageArray.push("")
+
             }
+        }
             return {filteredArrayList, percentageArray}
         }
     
@@ -709,21 +715,31 @@ function getItemFromLocalStorage() {
    let pullProjects = JSON.parse(localStorage.getItem('projectInfo'));
    for (const projectInfo in pullProjects) {
         let storedProjectInfo = pullProjects[projectInfo]
+        if (storedProjectInfo._title != undefined) {
         addBackProjectMethods(storedProjectInfo);
         displayStoredProject(storedProjectInfo)
+        } else {
+            projectListInfo.push("");
+            projectList.push("")
+        }
+    console.log(projectList)
+        
    }
     for (const project in pullTasks) {
-            if (pullTasks != "") {
-            pullTasks[project].forEach(function(item) {
-            selectedProject = document.getElementById(project);
-            addTaskId = project;
-            let storedItem = item
-            addBackTaskMethods(storedItem)
-            createStoredTask(storedItem)
-            })
+        console.log(pullTasks)
+            if (pullTasks[project] != "") {
+                pullTasks[project].forEach(function(item) {
+                selectedProject = document.getElementById(project);
+                addTaskId = project;
+                console.log(addTaskId)
+                let storedItem = item
+                addBackTaskMethods(storedItem)
+                createStoredTask(storedItem)
+                })
+        }        
         }
     }
-}
+
 
 function addBackTaskMethods(item) {
     Object.defineProperty(item, 'status', {
@@ -764,7 +780,7 @@ function displayStoredProject(storedProject) {
     projectToDoButtonList(addItemToProjectButton);
     let deleteProjectButton = addProjectDeleteButton(buttonSection);
     projectDeleteButtonList(deleteProjectButton);
-    addItemToProject();
+    addItemToProject(addItemToProjectButton);
     deleteButtonFunctionality(deleteProjectButton);
     projectEditButtonFunctionality(editProjectButton);
 }
